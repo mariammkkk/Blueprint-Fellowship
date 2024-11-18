@@ -24,14 +24,11 @@ cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", ("DwayneT
 conn.commit()
 conn.close()
 
-username = "TESTTEST"
-
 # Retrieve data from the table
 conn = sqlite3.connect('mydatabase.db')
 cursor = conn.cursor()
 cursor.execute(f"""SELECT * 
-FROM users
-WHERE username = '{username}';""")
+FROM users""")
 rows = cursor.fetchall()
 
 # Display the retrieved data

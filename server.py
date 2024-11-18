@@ -14,41 +14,40 @@ server_binding = ("localhost", 9999)
 ss.bind(server_binding)
 ss.listen()
 
-def check_credentials(c):
-    c = sqlite3.connect('mydatabase.db')
-    cursor = c.cursor()
-    cursor.execute(f"""SELECT * 
-    FROM users
-    WHERE username = '{username}';""")
-    rows = cursor.fetchall()
+# Function to verify login credentials
+def check_credentials(username, password):
+    conn = sqlite3.connect('mydatabase.db')
+    cursor = conn.cursor()
+    # Check if the username and password inputted is present in the table 'users'
+    cursor.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password)) 
+    # Once SQL query is run, fetch the username and password set in the first row. 'user' will be None if there is no match.
+    user = cursor.fetchone() 
+    conn.close()
+    return user is not None # If a user is present, this returns True, if not then False
 
-    for username, password in rows:
-        if username == rows.username and password == rows.password:
-            print("You are an authorized user.")
-        else:
-            print("You are not an authorized user.")
 
-    c.send()
-    account = c.recv(1024).decode() # 1024 bytes tells us the size / buffer of the content we are recieving so that the socket knows how much to expect
-    print("[S]: Data received from client: " + account)
+def start_connection(c): # taking client as parameter
+    msg = "Enter your login credentials here:"
+    c.send(msg.encode())
 
-    count = 0
-    while(count < 100): # use loop to send 1, 2, 3, 4, 5 to client --> you can only send strings 
-        c.send(str(count).encode())
-        response = c.recv(1024).decode()
-        print("[S]: Data received from client: " + response)
-        count+=1
+    username = c.recv(1024).decode()
+    print("[S]: Recieved username: " + username)    
 
-    print("Done")
+    password = c.recv(1024).decode()
+    print("[S]: Recieved password: " + password)    
 
-    while True:
-        client, addr = ss.accept()
-        t2 = threading.Thread(target=check_credentials, args=(client,))
-        t2.start()
-    
-    # Close the connection
-        c.close()
+    if check_credentials(username, password):
+        c.send("Authorized user. Access granted.").encode()
+        print("[S]: Authorized user has logged in.")
+    else:
+        c.send("Unauthorized user. Access denied.").encode()
+        print("[S]: Unauthorized login attempt.")
+
+while True:
+    client, addr = ss.accept()
+    t2 = threading.Thread(target=start_connection, args=(client,))
+    t2.start()
+
     # Close the server socket
-        ss.close()
-        exit()
-          
+    ss.close()
+    exit()
