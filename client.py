@@ -11,8 +11,8 @@ except socket.error as err:
 
 # user input
 print("--- Enter User Credentials ---")
-username = input("Username: ").strip()
-password = input("Password: ").strip()
+username = input("Username: ")
+password = input("Password: ")
 
 # connect to the server on local machine
 server_binding = ("localhost", 9999)
