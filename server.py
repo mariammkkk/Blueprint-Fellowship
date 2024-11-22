@@ -27,9 +27,6 @@ def check_credentials(username, password):
 
 
 def start_connection(c): # taking client as parameter
-    # msg = "Enter your login credentials"
-    # c.send(msg.encode())
-
     # receive and process username
     username = c.recv(1024).decode()
     print("[S]: Received username: " + username)    
