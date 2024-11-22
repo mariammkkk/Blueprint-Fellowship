@@ -24,7 +24,7 @@ cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", ("DwayneT
 conn.commit()
 conn.close()
 
-# Retrieve data from the table
+# Retrieve data from table
 conn = sqlite3.connect('mydatabase.db')
 cursor = conn.cursor()
 cursor.execute(f"""SELECT * 
