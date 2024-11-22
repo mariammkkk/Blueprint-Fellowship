@@ -27,14 +27,16 @@ def check_credentials(username, password):
 
 
 def start_connection(c): # taking client as parameter
-    msg = "Enter your login credentials here:"
+    msg = "Enter your login credentials"
     c.send(msg.encode())
 
+    # receive and process username
     username = c.recv(1024).decode()
-    print("[S]: Recieved username: " + username)    
+    print("[S]: Received username: " + username)    
 
+    # receive and process password
     password = c.recv(1024).decode()
-    print("[S]: Recieved password: " + password)    
+    print("[S]: Received password: " + password)    
 
     if check_credentials(username, password):
         c.send("Authorized user. Access granted.".encode())
@@ -42,6 +44,9 @@ def start_connection(c): # taking client as parameter
     else:
         c.send("Unauthorized user. Access denied.".encode())
         print("[S]: Unauthorized login attempt.")
+    
+    # close client connection
+    c.close()
 
 while True:
     client, addr = ss.accept()
