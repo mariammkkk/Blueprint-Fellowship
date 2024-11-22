@@ -11,8 +11,8 @@ except socket.error as err:
 
 # user input
 print("--- Enter User Credentials ---")
-username = input("Username: ")
-password = input("Password: ")
+username = input("Username: ").strip()
+password = input("Password: ").strip()
 
 # connect to the server on local machine
 server_binding = ("localhost", 9999)
@@ -24,14 +24,13 @@ time.sleep(0.1) # add a small delay
 cs.send(password.encode())
 
 # receive data from server:
-data_from_server = cs.recv(1024)
-response = data_from_server.decode()
+response = cs.recv(1024).decode()
 print("[C]: Data received from server: " + response)
 
-if "Unauthorized" in response:
-    print("[C]: Login failed.")
-else:
+if response == "Authorized user. Access granted.":
     print("[C]: Login successful.")
+else:
+    print("[C]: Login failed.")
 
 # close the client sockets
 cs.close()
