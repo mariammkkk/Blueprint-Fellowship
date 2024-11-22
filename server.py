@@ -1,6 +1,6 @@
 import threading # two things happening at once
 import sqlite3
-import hashlib
+# import hashlib
 import socket # used to establish the connection between client and server
 
 try:
@@ -37,10 +37,10 @@ def start_connection(c): # taking client as parameter
     print("[S]: Recieved password: " + password)    
 
     if check_credentials(username, password):
-        c.send("Authorized user. Access granted.").encode()
+        c.send("Authorized user. Access granted.".encode())
         print("[S]: Authorized user has logged in.")
     else:
-        c.send("Unauthorized user. Access denied.").encode()
+        c.send("Unauthorized user. Access denied.".encode())
         print("[S]: Unauthorized login attempt.")
 
 while True:
